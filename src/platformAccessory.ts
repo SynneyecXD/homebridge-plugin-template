@@ -24,37 +24,47 @@ export class ExamplePlatformAccessory {
     private readonly platform: ExampleHomebridgePlatform,
     private readonly accessory: PlatformAccessory,
   ) {
-
     // set accessory information
-    this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Dari Gomez')
+    this.accessory
+      .getService(this.platform.Service.AccessoryInformation)!
+      .setCharacteristic(
+        this.platform.Characteristic.Manufacturer,
+        'Dari Gomez',
+      )
       .setCharacteristic(this.platform.Characteristic.Model, 'V1')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, 'HOMEMADE');
 
     // get the WindowCovering service if it exists, otherwise create a new WindowCovering service
     // you can create multiple services for each accessory
-    this.service = this.accessory.getService(this.platform.Service.WindowCovering) ||
-    this.accessory.addService(this.platform.Service.WindowCovering);
+    this.service =
+      this.accessory.getService(this.platform.Service.WindowCovering) ||
+      this.accessory.addService(this.platform.Service.WindowCovering);
 
     // set the service name, this is what is displayed as the default name on the Home app
     // in this example we are using the name we stored in the `accessory.context` in the `discoverDevices` method.
-    this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.exampleDisplayName);
+    this.service.setCharacteristic(
+      this.platform.Characteristic.Name,
+      accessory.context.device.exampleDisplayName,
+    );
 
     // each service must implement at-minimum the "required characteristics" for the given service type
     // see https://developers.homebridge.io/#/service/WindowCovering
 
     // register handlers for the CurrentPosition Characteristic
-    this.service.getCharacteristic(this.platform.Characteristic.CurrentPosition)
-      .onGet(this.getTargetPosition.bind(this));       // GET - bind to the 'getTargetPosition` method below
+    this.service
+      .getCharacteristic(this.platform.Characteristic.CurrentPosition)
+      .onGet(this.getTargetPosition.bind(this)); // GET - bind to the 'getTargetPosition` method below
 
     // register handlers for the PositionState Characteristic
-    this.service.getCharacteristic(this.platform.Characteristic.PositionState)
-      .onGet(this.getTargetPosition.bind(this));       // GET - bind to the 'getTargetPosition` method below
+    this.service
+      .getCharacteristic(this.platform.Characteristic.PositionState)
+      .onGet(this.getTargetPosition.bind(this)); // GET - bind to the 'getTargetPosition` method below
 
     // register handlers for the TargetPosition Characteristic
-    this.service.getCharacteristic(this.platform.Characteristic.TargetPosition)
-      .onSet(this.setTargetPosition.bind(this))                // SET - bind to the `setTargetPosition` method below
-      .onGet(this.getTargetPosition.bind(this));               // GET - bind to the `getTargetPosition` method below
+    this.service
+      .getCharacteristic(this.platform.Characteristic.TargetPosition)
+      .onSet(this.setTargetPosition.bind(this)) // SET - bind to the `setTargetPosition` method below
+      .onGet(this.getTargetPosition.bind(this)); // GET - bind to the `getTargetPosition` method below
   }
 
   /**
@@ -64,6 +74,12 @@ export class ExamplePlatformAccessory {
   async setTargetPosition(value: CharacteristicValue) {
     // implement your own code to turn your device on/off
     this.exampleStates.TargetPosition = value as number;
+
+    this.exampleStates.PositionState = (value as number) > 50 ? 1 : 0;
+    setTimeout(() => {
+      this.exampleStates.PositionState = 2;
+      this.exampleStates.CurrentPosition = this.exampleStates.TargetPosition;
+    }, 1000);
 
     this.platform.log.debug('Set Characteristic TargetPosition ->', value);
   }
@@ -83,7 +99,10 @@ export class ExamplePlatformAccessory {
     // implement your own code to check if the device is on
     const CurrentPosition = this.exampleStates.CurrentPosition;
 
-    this.platform.log.debug('Get Characteristic TargetPosition ->', CurrentPosition);
+    this.platform.log.debug(
+      'Get Characteristic TargetPosition ->',
+      CurrentPosition,
+    );
 
     // if you need to return an error to show the device as "Not Responding" in the Home app:
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
@@ -95,7 +114,10 @@ export class ExamplePlatformAccessory {
     // implement your own code to check if the device is on
     const PositionState = this.exampleStates.PositionState;
 
-    this.platform.log.debug('Get Characteristic TargetPosition ->', PositionState);
+    this.platform.log.debug(
+      'Get Characteristic TargetPosition ->',
+      PositionState,
+    );
 
     // if you need to return an error to show the device as "Not Responding" in the Home app:
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
@@ -107,7 +129,10 @@ export class ExamplePlatformAccessory {
     // implement your own code to check if the device is on
     const TargetPosition = this.exampleStates.TargetPosition;
 
-    this.platform.log.debug('Get Characteristic TargetPosition ->', TargetPosition);
+    this.platform.log.debug(
+      'Get Characteristic TargetPosition ->',
+      TargetPosition,
+    );
 
     // if you need to return an error to show the device as "Not Responding" in the Home app:
     // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);

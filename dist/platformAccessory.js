@@ -20,27 +20,32 @@ class ExamplePlatformAccessory {
             TargetPosition: 100,
         };
         // set accessory information
-        this.accessory.getService(this.platform.Service.AccessoryInformation)
+        this.accessory
+            .getService(this.platform.Service.AccessoryInformation)
             .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Dari Gomez')
             .setCharacteristic(this.platform.Characteristic.Model, 'V1')
             .setCharacteristic(this.platform.Characteristic.SerialNumber, 'HOMEMADE');
         // get the WindowCovering service if it exists, otherwise create a new WindowCovering service
         // you can create multiple services for each accessory
-        this.service = this.accessory.getService(this.platform.Service.WindowCovering) ||
-            this.accessory.addService(this.platform.Service.WindowCovering);
+        this.service =
+            this.accessory.getService(this.platform.Service.WindowCovering) ||
+                this.accessory.addService(this.platform.Service.WindowCovering);
         // set the service name, this is what is displayed as the default name on the Home app
         // in this example we are using the name we stored in the `accessory.context` in the `discoverDevices` method.
         this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.exampleDisplayName);
         // each service must implement at-minimum the "required characteristics" for the given service type
         // see https://developers.homebridge.io/#/service/WindowCovering
         // register handlers for the CurrentPosition Characteristic
-        this.service.getCharacteristic(this.platform.Characteristic.CurrentPosition)
+        this.service
+            .getCharacteristic(this.platform.Characteristic.CurrentPosition)
             .onGet(this.getTargetPosition.bind(this)); // GET - bind to the 'getTargetPosition` method below
         // register handlers for the PositionState Characteristic
-        this.service.getCharacteristic(this.platform.Characteristic.PositionState)
+        this.service
+            .getCharacteristic(this.platform.Characteristic.PositionState)
             .onGet(this.getTargetPosition.bind(this)); // GET - bind to the 'getTargetPosition` method below
         // register handlers for the TargetPosition Characteristic
-        this.service.getCharacteristic(this.platform.Characteristic.TargetPosition)
+        this.service
+            .getCharacteristic(this.platform.Characteristic.TargetPosition)
             .onSet(this.setTargetPosition.bind(this)) // SET - bind to the `setTargetPosition` method below
             .onGet(this.getTargetPosition.bind(this)); // GET - bind to the `getTargetPosition` method below
     }
@@ -51,6 +56,11 @@ class ExamplePlatformAccessory {
     async setTargetPosition(value) {
         // implement your own code to turn your device on/off
         this.exampleStates.TargetPosition = value;
+        this.exampleStates.PositionState = value > 50 ? 1 : 0;
+        setTimeout(() => {
+            this.exampleStates.PositionState = 2;
+            this.exampleStates.CurrentPosition = this.exampleStates.TargetPosition;
+        }, 1000);
         this.platform.log.debug('Set Characteristic TargetPosition ->', value);
     }
     /**
