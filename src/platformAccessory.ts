@@ -79,6 +79,7 @@ export class ExamplePlatformAccessory {
     setTimeout(() => {
       this.exampleStates.PositionState = 2;
       this.exampleStates.CurrentPosition = this.exampleStates.TargetPosition;
+      this.platform.log.debug('Blind finished moving.');
     }, 1000);
 
     this.platform.log.debug('Set Characteristic TargetPosition ->', value);
@@ -100,8 +101,7 @@ export class ExamplePlatformAccessory {
     const CurrentPosition = this.exampleStates.CurrentPosition;
 
     this.platform.log.debug(
-      'Get Characteristic TargetPosition ->',
-      CurrentPosition,
+      'Get Characteristic CurrentPosition ->', CurrentPosition,
     );
 
     // if you need to return an error to show the device as "Not Responding" in the Home app:
@@ -115,8 +115,7 @@ export class ExamplePlatformAccessory {
     const PositionState = this.exampleStates.PositionState;
 
     this.platform.log.debug(
-      'Get Characteristic TargetPosition ->',
-      PositionState,
+      'Get Characteristic PositionState ->', PositionState,
     );
 
     // if you need to return an error to show the device as "Not Responding" in the Home app:
@@ -130,8 +129,7 @@ export class ExamplePlatformAccessory {
     const TargetPosition = this.exampleStates.TargetPosition;
 
     this.platform.log.debug(
-      'Get Characteristic TargetPosition ->',
-      TargetPosition,
+      'Get Characteristic TargetPosition ->', TargetPosition,
     );
 
     // if you need to return an error to show the device as "Not Responding" in the Home app:
