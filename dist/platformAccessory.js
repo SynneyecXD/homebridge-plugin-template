@@ -60,8 +60,10 @@ class ExamplePlatformAccessory {
         setTimeout(() => {
             this.exampleStates.PositionState = 2;
             this.exampleStates.CurrentPosition = this.exampleStates.TargetPosition;
+            this.service.updateCharacteristic(this.platform.Characteristic.CurrentPosition, this.exampleStates.CurrentPosition);
+            this.service.updateCharacteristic(this.platform.Characteristic.PositionState, this.exampleStates.PositionState);
             this.platform.log.debug('Blind finished moving.');
-        }, 1000);
+        }, 2500);
         this.platform.log.debug('Set Characteristic TargetPosition ->', value);
     }
     /**
