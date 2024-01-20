@@ -38,11 +38,11 @@ class ExamplePlatformAccessory {
         // register handlers for the CurrentPosition Characteristic
         this.service
             .getCharacteristic(this.platform.Characteristic.CurrentPosition)
-            .onGet(this.getTargetPosition.bind(this)); // GET - bind to the 'getTargetPosition` method below
+            .onGet(this.getCurrentPosition.bind(this)); // GET - bind to the 'getCurrentPosition` method below
         // register handlers for the PositionState Characteristic
         this.service
             .getCharacteristic(this.platform.Characteristic.PositionState)
-            .onGet(this.getTargetPosition.bind(this)); // GET - bind to the 'getTargetPosition` method below
+            .onGet(this.getPositionState.bind(this)); // GET - bind to the 'getPositionState` method below
         // register handlers for the TargetPosition Characteristic
         this.service
             .getCharacteristic(this.platform.Characteristic.TargetPosition)
@@ -60,6 +60,7 @@ class ExamplePlatformAccessory {
         setTimeout(() => {
             this.exampleStates.PositionState = 2;
             this.exampleStates.CurrentPosition = this.exampleStates.TargetPosition;
+            this.platform.log.debug('Blind finished moving.');
         }, 1000);
         this.platform.log.debug('Set Characteristic TargetPosition ->', value);
     }
@@ -76,7 +77,7 @@ class ExamplePlatformAccessory {
     async getCurrentPosition() {
         // implement your own code to check if the device is on
         const CurrentPosition = this.exampleStates.CurrentPosition;
-        this.platform.log.debug('Get Characteristic TargetPosition ->', CurrentPosition);
+        this.platform.log.debug('Get Characteristic CurrentPosition ->', CurrentPosition);
         // if you need to return an error to show the device as "Not Responding" in the Home app:
         // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
         return CurrentPosition;
@@ -84,7 +85,7 @@ class ExamplePlatformAccessory {
     async getPositionState() {
         // implement your own code to check if the device is on
         const PositionState = this.exampleStates.PositionState;
-        this.platform.log.debug('Get Characteristic TargetPosition ->', PositionState);
+        this.platform.log.debug('Get Characteristic PositionState ->', PositionState);
         // if you need to return an error to show the device as "Not Responding" in the Home app:
         // throw new this.platform.api.hap.HapStatusError(this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE);
         return PositionState;

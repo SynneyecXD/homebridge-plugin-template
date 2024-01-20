@@ -53,12 +53,12 @@ export class ExamplePlatformAccessory {
     // register handlers for the CurrentPosition Characteristic
     this.service
       .getCharacteristic(this.platform.Characteristic.CurrentPosition)
-      .onGet(this.getTargetPosition.bind(this)); // GET - bind to the 'getTargetPosition` method below
+      .onGet(this.getCurrentPosition.bind(this)); // GET - bind to the 'getCurrentPosition` method below
 
     // register handlers for the PositionState Characteristic
     this.service
       .getCharacteristic(this.platform.Characteristic.PositionState)
-      .onGet(this.getTargetPosition.bind(this)); // GET - bind to the 'getTargetPosition` method below
+      .onGet(this.getPositionState.bind(this)); // GET - bind to the 'getPositionState` method below
 
     // register handlers for the TargetPosition Characteristic
     this.service
@@ -76,6 +76,7 @@ export class ExamplePlatformAccessory {
     this.exampleStates.TargetPosition = value as number;
 
     this.exampleStates.PositionState = (value as number) > 50 ? 1 : 0;
+
     setTimeout(() => {
       this.exampleStates.PositionState = 2;
       this.exampleStates.CurrentPosition = this.exampleStates.TargetPosition;
