@@ -9,6 +9,7 @@ import { ExampleHomebridgePlatform } from './platform';
  */
 export class ExamplePlatformAccessory {
   private service: Service;
+  private batteryService: Service;
 
   /**
    * These are just used to create a working example
@@ -18,6 +19,7 @@ export class ExamplePlatformAccessory {
     CurrentPosition: 100,
     PositionState: 2,
     TargetPosition: 100,
+    BatteryLevel: 80,
   };
 
   constructor(
@@ -32,13 +34,21 @@ export class ExamplePlatformAccessory {
         'Dari Gomez',
       )
       .setCharacteristic(this.platform.Characteristic.Model, 'V1')
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, 'HOMEMADE');
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, 'DEFAULT_SN');
 
     // get the WindowCovering service if it exists, otherwise create a new WindowCovering service
     // you can create multiple services for each accessory
     this.service =
       this.accessory.getService(this.platform.Service.WindowCovering) ||
       this.accessory.addService(this.platform.Service.WindowCovering);
+
+    this.batteryService =
+      this.accessory.getService(this.platform.Service.Battery) ||
+      this.accessory.addService(this.platform.Service.Battery);
+
+    this.batteryService.setCharacteristic(this.platform.Characteristic.BatteryLevel, this.exampleStates.BatteryLevel);
+    this.batteryService.setCharacteristic(this.platform.Characteristic.StatusLowBattery, 0);
+    this.batteryService.setCharacteristic(this.platform.Characteristic.ChargingState, 0);
 
     // set the service name, this is what is displayed as the default name on the Home app
     // in this example we are using the name we stored in the `accessory.context` in the `discoverDevices` method.
@@ -65,6 +75,25 @@ export class ExamplePlatformAccessory {
       .getCharacteristic(this.platform.Characteristic.TargetPosition)
       .onSet(this.setTargetPosition.bind(this)) // SET - bind to the `setTargetPosition` method below
       .onGet(this.getTargetPosition.bind(this)); // GET - bind to the `getTargetPosition` method below
+
+    this.batteryService.getCharacteristic(this.platform.Characteristic.BatteryLevel)
+      .onGet(this.getBatteryLevel.bind(this));
+
+    this.batteryService.getCharacteristic(this.platform.Characteristic.StatusLowBattery)
+      .onGet(this.getBatteryStatus.bind(this));
+
+  }
+
+  async getBatteryLevel(): Promise<CharacteristicValue> {
+    const batteryLevel = this.exampleStates.BatteryLevel;
+    this.platform.log.debug(
+      'Get Characteristic BatteryLevel ->', batteryLevel,
+    );
+    return batteryLevel;
+  }
+
+  async getBatteryStatus(): Promise<CharacteristicValue> {
+    return 0;
   }
 
   /**

@@ -9,12 +9,15 @@ export declare class ExamplePlatformAccessory {
     private readonly platform;
     private readonly accessory;
     private service;
+    private batteryService;
     /**
      * These are just used to create a working example
      * You should implement your own code to track the state of your accessory
      */
     private exampleStates;
     constructor(platform: ExampleHomebridgePlatform, accessory: PlatformAccessory);
+    getBatteryLevel(): Promise<CharacteristicValue>;
+    getBatteryStatus(): Promise<CharacteristicValue>;
     /**
      * Handle "SET" requests from HomeKit
      * These are sent when the user changes the state of an accessory, for example, turning on a Light bulb.
